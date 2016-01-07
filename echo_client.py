@@ -47,6 +47,7 @@ def client(msg, log_buffer=sys.stderr):
     finally:
         # TODO: after you break out of the loop receiving echoed chunks from
         #       the server you will want to close your client socket.
+        sock.close()
         print('closing socket', file=log_buffer)
 
         # TODO: when all is said and done, you should return the reply you got
