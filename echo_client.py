@@ -16,18 +16,6 @@ def client(msg, log_buffer=sys.stderr):
 
     # you can use this as a place to accumulate the entire message echoed back
     # from the server
-    # received_message = ''
-
-    # done = False
-    # while not done:
-    #     received_message = sock.recv(16)
-    #     if len(received_message) < 16:
-    #         done = True
-    #         break
-    # msg += received_message.decode('utf8')
-
-
-
     # this try/finally block exists purely to allow us to close the socket
     # when we are finished with it
     try:
@@ -44,7 +32,6 @@ def client(msg, log_buffer=sys.stderr):
         #       Log each chunk you receive.  Use the print statement below to
         #       do it. This will help in debugging problems
 
-
         chunk = b''
         done = False
         while not done:
@@ -52,8 +39,6 @@ def client(msg, log_buffer=sys.stderr):
             if len(msg_part) < 16:
                 done = True
             chunk += msg_part
-
-
 
 
         print('received "{0}"'.format(chunk.decode('utf8')), file=log_buffer)

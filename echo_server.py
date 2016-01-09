@@ -21,6 +21,7 @@ def server(log_buffer=sys.stderr):
 
     # TODO: bind your new sock 'sock' to the address above and begin to listen
     #       for incoming connections
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     sock.bind(address)
     sock.listen(1)
 
@@ -44,30 +45,29 @@ def server(log_buffer=sys.stderr):
                 # the inner loop will receive messages sent by the client in
                 # buffers.  When a complete message has been received, the
                 # loop will exit
-                while True:
+
+                data = b''
+                bufferSize = 16
+                
+                done = False
+                while not done:
+                    part = conn.recv(bufferSize)
+                    if len(part) < bufferSize:
+                        done = True
+                    # data += part 
+
                     # TODO: receive 16 bytes of data from the client. Store
                     #       the data you receive as 'data'.  Replace the
                     #       following line with your code.  It's only here as
                     #       a placeholder to prevent an error in string
                     #       formatting
 
-                    data = b''
-                    done = False
-                    while not done:
-                        part = conn.recv(16)
-                        if len(part) < 16:
-                            done = True
-                        data += part
-
-
-
-
                     print('received "{0}"'.format(data.decode('utf8')))
                     # TODO: Send the data you received back to the client, log
                     # the fact using the print statement here.  It will help in
                     # debugging problems.
 
-                    conn.sendall(data)
+                    conn.sendall(part)
 
                     print('sent "{0}"'.format(data.decode('utf8')))
                     
@@ -80,7 +80,7 @@ def server(log_buffer=sys.stderr):
                 # TODO: When the inner loop exits, this 'finally' clause will
                 #       be hit. Use that opportunity to close the socket you
                 #       created above when a client connected.
-                sock.close()
+                conn.close()
                 print(
                     'echo complete, client connection closed', file=log_buffer
                 )
