@@ -3,7 +3,7 @@ import sys
 
 
 def client(msg, log_buffer=sys.stderr):
-    server_address = ('localhost', 10000)
+    server_address = ('127.0.0.1', 10000)
     # TODO: Replace the following line with your code which will instantiate
     #       a TCP socket with IPv4 Addressing, call the socket you make 'sock'
 
@@ -14,11 +14,19 @@ def client(msg, log_buffer=sys.stderr):
 
     sock.connect(server_address)
 
-
-
     # you can use this as a place to accumulate the entire message echoed back
     # from the server
-    received_message = ''
+    # received_message = ''
+
+    # done = False
+    # while not done:
+    #     received_message = sock.recv(16)
+    #     if len(received_message) < 16:
+    #         done = True
+    #         break
+    # msg += received_message.decode('utf8')
+
+
 
     # this try/finally block exists purely to allow us to close the socket
     # when we are finished with it
@@ -26,11 +34,7 @@ def client(msg, log_buffer=sys.stderr):
         print('sending "{0}"'.format(msg), file=log_buffer)
         # TODO: send your message to the server here.
 
-        msg.encode('utf8')
-
-        sock.sendall(msg)
-
-
+        sock.sendall(msg.encode('utf8'))
 
         # TODO: the server should be sending you back your message as a series
         #       of 16-byte chunks. Accumulate the chunks you get to build the
@@ -39,11 +43,21 @@ def client(msg, log_buffer=sys.stderr):
         #
         #       Log each chunk you receive.  Use the print statement below to
         #       do it. This will help in debugging problems
-        
 
-        chunk = ''
+
+        chunk = b''
+        done = False
+        while not done:
+            msg_part = sock.recv(16)
+            if len(msg_part) < 16:
+                done = True
+            chunk += msg_part
+
+
+
 
         print('received "{0}"'.format(chunk.decode('utf8')), file=log_buffer)
+
     finally:
         # TODO: after you break out of the loop receiving echoed chunks from
         #       the server you will want to close your client socket.
@@ -52,6 +66,7 @@ def client(msg, log_buffer=sys.stderr):
 
         # TODO: when all is said and done, you should return the reply you got
         # from the server as the value of this function.
+    return chunk.decode('utf8')
 
 
 

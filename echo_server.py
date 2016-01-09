@@ -4,7 +4,7 @@ import sys
 
 def server(log_buffer=sys.stderr):
     # set an address for our server
-    address = ('127.0.0.1', 10000)
+    address = ('localhost', 10000)
     # TODO: Replace the following line with your code which will instantiate
     #       a TCP socket with IPv4 Addressing, call the socket you make 'sock' 
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP)
@@ -23,7 +23,6 @@ def server(log_buffer=sys.stderr):
     #       for incoming connections
     sock.bind(address)
     sock.listen(1)
-
 
 
     try:
@@ -51,21 +50,29 @@ def server(log_buffer=sys.stderr):
                     #       following line with your code.  It's only here as
                     #       a placeholder to prevent an error in string
                     #       formatting
-                    
-                    data = conn.recv(16)
+
+                    data = b''
+                    done = False
+                    while not done:
+                        part = conn.recv(16)
+                        if len(part) < 16:
+                            done = True
+                        data += part
+
+
 
 
                     print('received "{0}"'.format(data.decode('utf8')))
                     # TODO: Send the data you received back to the client, log
                     # the fact using the print statement here.  It will help in
                     # debugging problems.
-                    
+
                     conn.sendall(data)
 
                     print('sent "{0}"'.format(data.decode('utf8')))
+                    
                     # TODO: Check here to see if the message you've received is
                     # complete.  If it is, break out of this inner loop.
-                    
 
 
 
@@ -83,7 +90,6 @@ def server(log_buffer=sys.stderr):
         #       close the server socket and exit from the server function.
         #       Replace the call to `pass` below, which is only there to
         #       prevent syntax problems
-        server.close()
         print('quitting echo server', file=log_buffer)
 
 
