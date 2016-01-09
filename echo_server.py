@@ -22,7 +22,7 @@ def server(log_buffer=sys.stderr):
     # TODO: bind your new sock 'sock' to the address above and begin to listen
     #       for incoming connections
     sock.bind(address)
-    sock.listen(10)
+    sock.listen(1)
 
 
     try:
@@ -52,20 +52,15 @@ def server(log_buffer=sys.stderr):
                     #       formatting
 
                     data = b''
-                    # done = False
-                    # while not done:
-                    #     part = conn.recv(16)
-                    #     if len(part) < 16:
-                    #         done = True
-                    #     data += part
-
-                    while True:
+                    done = False
+                    while not done:
                         part = conn.recv(16)
                         if len(part) < 16:
-                            data += part
-                            break
-
+                            done = True
                         data += part
+
+
+
 
                     print('received "{0}"'.format(data.decode('utf8')))
                     # TODO: Send the data you received back to the client, log
@@ -94,8 +89,7 @@ def server(log_buffer=sys.stderr):
         # TODO: Use the python KeyboardInterrupt exception as a signal to
         #       close the server socket and exit from the server function.
         #       Replace the call to `pass` below, which is only there to
-        #       prevent syntax problems'
-        sock.close()
+        #       prevent syntax problems
         print('quitting echo server', file=log_buffer)
 
 
